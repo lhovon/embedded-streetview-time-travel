@@ -76,6 +76,7 @@ async function findPanorama(svService, panoRequest, coordinates) {
             const sv = new StreetViewPanorama(
                 document.getElementById("streetview"), 
                 {
+                    pano: data.location.pano,
                     position: coordinates, 
                     zoom: 0,
                     pov: {heading: heading, pitch: 0},
@@ -83,7 +84,6 @@ async function findPanorama(svService, panoRequest, coordinates) {
                     fullscreenControl: false // would be hidden by time travel
                 }
             );
-            sv.setPano(data.location.pano);
 
             const map = new Map(document.getElementById("satellite"), {
                 center: coordinates,
@@ -95,6 +95,7 @@ async function findPanorama(svService, panoRequest, coordinates) {
             // Make these available globally so we can access them later
             window.sv = sv;
             window.map = map;
+            window.lastPanoId = data.location.pano;
             
             // Generate the list of options, with the initial panorama date selected
             const options = generateTimeTravelOptions(
@@ -108,6 +109,12 @@ async function findPanorama(svService, panoRequest, coordinates) {
             sv.addListener("pano_changed", () => {
                 console.debug("pano_changed");
                 const newPanoId = sv.getPano();
+
+                // Skip duplicate events
+                if (window.lastPanoId === newPanoId) {
+                    console.debug(`Extra event on ${window.lastPanoId}, returning!`);
+                    return;
+                }
                 
                 // Get more info on the pano from StreetViewService
                 svService.getPanorama({ pano: newPanoId }, function (data, status) {
@@ -117,6 +124,7 @@ async function findPanorama(svService, panoRequest, coordinates) {
                         
                         document.getElementById("time-travel-select")
                                 .replaceChildren(...options);
+                        window.lastPanoId = data.location.pano;
                     }}
                 );
             });
