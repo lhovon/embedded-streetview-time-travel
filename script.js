@@ -13,13 +13,6 @@
 })();
 
 /**
- * Time travel dropdown onchange method 
- */
-function timeTravel(panoId) {
-    window.sv.setPano(panoId);
-}
-
-/**
  * Take an array of available panoramas and their dates
  * and return a list of <option> elements for a drop-down,
  * with the date closest to targetDate selected.
@@ -31,8 +24,7 @@ function generateTimeTravelOptions(panoArray, targetDate) {
     const dateSplit = targetDate.split("-");
     const selectedPanoDate = new Date(dateSplit[0], parseInt(dateSplit[1]) - 1, 1);
 
-    let minDiff = Infinity;
-    let closestPanoEl
+    let closestPanoEl, minDiff = Infinity;
     
     // Assuming the objects have only 2 keys: "pano" and the variably-named date key
     const dateKey = Object.keys(panoArray[0]).filter(e => {return e !== "pano";})[0];
@@ -42,12 +34,9 @@ function generateTimeTravelOptions(panoArray, targetDate) {
     panoArray.reverse().forEach(el => {
         const option = document.createElement("option");
         option.value = option.id = el["pano"];
-
+        
         const date = el[dateKey];
-        if (!date) {
-            console.error("Could not get date from element: ", el);
-            return;
-        }
+
         // User visible text of the dropdown option
         option.innerText = date.toLocaleDateString("en-US", {
             year: "numeric",
@@ -63,17 +52,14 @@ function generateTimeTravelOptions(panoArray, targetDate) {
         }
         options.push(option);
     });
-
     // Set the minimum difference element to selected
     closestPanoEl.selected = true;
-
     return options;
 }
 
 
 async function findPanorama(svService, panoRequest, coordinates) {
     const { Map } = await google.maps.importLibrary("maps");
-    const { event } = await google.maps.importLibrary("core");
     const { spherical } = await google.maps.importLibrary("geometry");
     const { StreetViewStatus, StreetViewPanorama } = await google.maps.importLibrary("streetView");
 
@@ -109,8 +95,6 @@ async function findPanorama(svService, panoRequest, coordinates) {
             // Make these available globally so we can access them later
             window.sv = sv;
             window.map = map;
-            window.lastPanoDate = data.imageDate;
-            window.lastPanoId = data.location.pano;
             
             // Generate the list of options, with the initial panorama date selected
             const options = generateTimeTravelOptions(
@@ -119,13 +103,7 @@ async function findPanorama(svService, panoRequest, coordinates) {
             );
             // Attach the options to the select
             document.getElementById("time-travel-select").append(...options);
-                
-            // Set the time travel select visible only once the map is fully loaded
-            // otherwise you see it appear on the side of the screen first.
-            // Not sure what to replace this with if using only streetview.
-            event.addListenerOnce(map, "idle", () => {
-                document.getElementById("time-travel-container").style.display = "flex";
-            });
+            document.getElementById("time-travel-container").style.display = "flex";
 
             sv.addListener("pano_changed", () => {
                 console.debug("pano_changed");
@@ -139,10 +117,6 @@ async function findPanorama(svService, panoRequest, coordinates) {
                         
                         document.getElementById("time-travel-select")
                                 .replaceChildren(...options);
-
-                        // save the current pano date for next time
-                        window.lastPanoDate = data.imageDate;
-                        window.lastPanoId = newPanoId;
                     }}
                 );
             });
