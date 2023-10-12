@@ -153,13 +153,17 @@ async function findPanorama(svService, panoRequest, coordinates) {
                     },
                     imageDateControl: true,
                     fullscreenControl: false,
+                    motionTracking: false,
+                    motionTrackingControl: false,
                 }
             );
 
             const map = new Map(document.getElementById("satellite"), {
                 center: coordinates,
-                mapTypeId: "hybrid",
                 zoom: 18,
+                controlSize: 25,
+                fullscreenControl: false,
+                mapTypeControl: false,
             });
             map.setStreetView(sv);
             
