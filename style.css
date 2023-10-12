@@ -1,0 +1,43 @@
+body {
+    overflow: hidden;
+    height: 100vh;
+}
+.centered {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+}
+#streetview {
+    height: 70vh;
+    width: 55vw;
+}
+#satellite {
+    height: 70vh;
+    width: 35vw;
+}
+#time-travel-container {
+    display: none;
+    background-color: #222222;
+    opacity: .8;
+    position: absolute;
+    right: 0px;
+    z-index: 10;
+    margin-top: 10px;
+    font-family: Roboto,Arial,sans-serif;
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
+    padding: 6px 8px;
+}
+#time-travel-label {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 12px;
+}
+#time-travel-select {
+    display: block;
+    height: 25px;
+    margin-top: 5px;
+}
