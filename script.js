@@ -9,6 +9,8 @@
     let panoRequest = {
         radius: 25,
         location: coordinates,
+        source: google.maps.StreetViewSource.OUTDOOR,
+        preference: google.maps.StreetViewPreference.NEAREST,
     };
     findPanorama(svService, panoRequest, coordinates);
 })();
