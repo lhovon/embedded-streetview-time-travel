@@ -17,4 +17,4 @@ Proof of concept implementation of a time travel feature in an embedded Streetvi
 - Replace `YOUR_API_KEY` in `index.html` with your key :) 
 - To start somewhere else, replace the `lat` and `lng` coordinates in `script.js::initMap()`
 
-See a detailed breakdown on my blog: https://loichovon.com/posts/maps-time-travel.html
+See a detailed breakdown on my blog: https://loichovon.com/posts/streetview-time-travel.html
